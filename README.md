@@ -4,9 +4,73 @@ v0.2 · Godot 4.6 / GDScript · 2D俯视角像素风原型。
 
 这版以接单、到店取餐、到址交付和结算为完整流程，包含两家餐馆、三个收货点和六笔预设订单。角色、相机、碰撞和取送点均为原生2D节点。街区和四向配送员使用可替换的代码像素素材，无需外部插件或素材包。
 
+## 项目整体状态
+
+最后源码核对：2026-10-21。源码基线：[372725c](https://github.com/lqc19891229/LastOrder/commit/372725c0d2a4e014207c7e81f7d8a683fbea1da3)。当前阶段为可玩外卖原型，玩法版本v0.2。
+
+| 模块 | 状态 | 当前范围 |
+| --- | --- | --- |
+| 引擎与显示 | 已实现 | Godot 4.6 / GDScript，2D俯视角，640×360基础画面与整数倍像素缩放 |
+| 配送流程 | 已实现 | 接单、取餐、交付、货币和贡献结算；同时最多两单 |
+| 订单生命周期 | 已实现 | 待取餐、配送中、送达、取消、超时；防重复结算 |
+| 内容数据 | 原型 | 两家餐馆、三个送达点、六笔固定订单，不自动补单 |
+| 角色与地图 | 原型 | 步行、快走、实体碰撞、镜头跟随、Y排序和取送标记 |
+| 城市通与HUD | 原型 | 接单列表、记录、取消确认、追踪、提示和方向小地图；由脚本创建 |
+| 美术与字体 | 原型 | 代码像素占位、中文字体子集；未定义最终人物和城市场景 |
+| 检查工具 | 已提供 | 37项订单规则检查、27项场景检查、图形环境画面捕获 |
+| 数据持久化 | 待实现 | 本轮状态仅在内存中，退出或F5重载后清空 |
+| 其他玩法 | 规划 | 配送车、婴儿照料、地下平台、温度与货损、多街区及完整剧情 |
+
+验证记录：当前已有64项可执行检查。本次文档更新核对了文件清单、源码职责和引用，未重新执行Godot运行时测试；具体运行命令见下文及[tests/readme.txt](tests/readme.txt)。
+
+状态用语：已实现表示存在可调用逻辑；原型表示流程或占位内容可用、仍需完善；已提供表示工具或配置已入库；规划/待实现表示尚无对应完整功能。
+
+## 目录说明入口
+
+| 目录说明 | 内容 |
+| --- | --- |
+| [assets/readme.txt](assets/readme.txt) | 资源类型与接入状态 |
+| [assets/fonts/readme.txt](assets/fonts/readme.txt) | 字体文件、来源、许可证与缺字处理 |
+| [data/readme.txt](data/readme.txt) | 静态内容配置与运行数据的边界 |
+| [data/orders/readme.txt](data/orders/readme.txt) | 六笔订单字段、状态与新增流程 |
+| [scenes/readme.txt](scenes/readme.txt) | 主场景节点职责和拆分规划 |
+| [scripts/readme.txt](scripts/readme.txt) | 脚本分层与模块调用关系 |
+| [scripts/delivery/readme.txt](scripts/delivery/readme.txt) | 模板、订单状态、服务接口与信号 |
+| [scripts/world/readme.txt](scripts/world/readme.txt) | 移动、碰撞、绘制、点位和镜头 |
+| [scripts/ui/readme.txt](scripts/ui/readme.txt) | HUD、终端、小地图与当前边界 |
+| [tests/readme.txt](tests/readme.txt) | 检查内容、执行方式和验证状态 |
+
+## 运行逻辑概览
+
+入口为project.godot → scenes/main.tscn。main.gd注册输入、收集Points点位、加载OrderSpec模板并配置DeliveryService，随后创建DeliveryHUD。
+
+接单按钮由HUD调用服务。地图取送先由main.gd判断24像素交互距离，再交给服务校验订单和结算；服务通过信号刷新界面。打开终端只关闭角色移动，订单计时继续。当前DeliveryService属于主场景，不是Autoload。
+
+## 根目录文件职责
+
+| 文件 | 功能与状态 |
+| --- | --- |
+| README.md | 项目总体状态、目录索引和运行说明，随功能变化维护 |
+| project.godot | 已配置启动场景、Godot版本特征及像素显示参数 |
+| icon.svg | 已提供工程图标，属于占位视觉资源 |
+| icon.svg.import | Godot图标导入配置，由编辑器维护 |
+| .gitignore | 已配置忽略.godot缓存、builds和临时文件 |
+
+## 当前后续事项
+
+1. 调整街区路线、取送点间距和订单时限，验证步行配送手感。
+2. 将HUD、城市通和订单卡拆成独立场景，再拆角色与可复用建筑。
+3. 统一地图范围、距离换算和上限说明等配置。
+4. 在现有取送接口上接入配送车；婴儿照料和地下委托作为后续模块。
+5. 需要跨场景或退出保留进度时，再设计会话管理和存档。
+
+## 文档维护约定
+
+新增、删除、重命名文件或调整职责时，同步更新对应目录的readme.txt；功能完成状态改变时，同步更新本页状态表。计划内容保留为规划状态。测试结果必须与实际执行记录区分。
+
 ## 打开和运行
 
-1. 解压整个 `last-order` 文件夹。
+1. 通过Git克隆本仓库，或下载ZIP并解压到本地。
 2. 在 **Godot 4.6标准版**的项目管理器点击「导入」，选择 `project.godot`，不需要 .NET。
 3. 等待第一次资源导入结束，按 F5 运行工程；主场景为 `scenes/main.tscn`。
 4. 本版实际验证引擎为 **4.6.stable.official.89cea1439**。
@@ -157,3 +221,4 @@ godot --headless --path . --script res://tests/test_scene.gd
 
 - https://docs.godotengine.org/en/4.6/classes/class_characterbody2d.html
 - https://docs.godotengine.org/en/4.6/tutorials/rendering/multiple_resolutions.html
+
