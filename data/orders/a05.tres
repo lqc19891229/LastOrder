@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="OrderSpec" load_steps=2 format=3]
+[ext_resource type="Script" path="res://scripts/delivery/order_spec.gd" id="1"]
+[resource]
+script = ExtResource("1")
+order_id = &"A05"
+meal_name = "站长加班餐"
+pickup_id = &"bento"
+dropoff_id = &"workshop"
+reward = 30
+contribution = 5
+time_limit = 145.0

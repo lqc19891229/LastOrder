@@ -1,0 +1,8 @@
+字体来源与修改说明
+
+Original family: Noto Sans CJK SC
+Source: https://github.com/notofonts/noto-cjk
+
+© 2014-2021 Adobe (http://www.adobe.com/).
+
+本工程使用经字形裁剪的版本，字体族名称修改为 Last Order CN。许可证见 OFL.txt。

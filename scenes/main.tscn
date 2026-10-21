@@ -1,0 +1,167 @@
+[gd_scene load_steps=12 format=3]
+
+[ext_resource type="Script" path="res://scripts/world/main.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/world/pixel_city.gd" id="2"]
+[ext_resource type="Script" path="res://scripts/world/pixel_building.gd" id="3"]
+[ext_resource type="Script" path="res://scripts/world/courier.gd" id="4"]
+[ext_resource type="Script" path="res://scripts/world/delivery_point.gd" id="5"]
+[ext_resource type="Script" path="res://scripts/delivery/delivery_service.gd" id="6"]
+
+[sub_resource type="RectangleShape2D" id="building"]
+size = Vector2(160, 48)
+
+[sub_resource type="RectangleShape2D" id="wide_building"]
+size = Vector2(176, 64)
+
+[sub_resource type="CircleShape2D" id="courier"]
+radius = 6.0
+
+[sub_resource type="RectangleShape2D" id="horizontal_boundary"]
+size = Vector2(1152, 8)
+
+[sub_resource type="RectangleShape2D" id="vertical_boundary"]
+size = Vector2(8, 896)
+
+[node name="LastOrder" type="Node2D"]
+script = ExtResource("1")
+
+[node name="PixelCity" type="Node2D" parent="."]
+z_index = -10
+script = ExtResource("2")
+
+[node name="Actors" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="NoodleShop" type="Node2D" parent="Actors"]
+position = Vector2(-280, 64)
+script = ExtResource("3")
+title = "回声面馆"
+
+[node name="Body" type="StaticBody2D" parent="Actors/NoodleShop"]
+position = Vector2(0, -24)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Actors/NoodleShop/Body"]
+shape = SubResource("building")
+
+[node name="BentoShop" type="Node2D" parent="Actors"]
+position = Vector2(256, 160)
+script = ExtResource("3")
+title = "夜班便当"
+
+[node name="Body" type="StaticBody2D" parent="Actors/BentoShop"]
+position = Vector2(0, -24)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Actors/BentoShop/Body"]
+shape = SubResource("building")
+
+[node name="Residence" type="Node2D" parent="Actors"]
+position = Vector2(-288, -248)
+script = ExtResource("3")
+title = "住区 A 栋"
+building_width = 176
+building_height = 160
+kind = 1
+
+[node name="Body" type="StaticBody2D" parent="Actors/Residence"]
+position = Vector2(0, -32)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Actors/Residence/Body"]
+shape = SubResource("wide_building")
+
+[node name="Workshop" type="Node2D" parent="Actors"]
+position = Vector2(272, -248)
+script = ExtResource("3")
+title = "维修站"
+building_height = 128
+kind = 2
+
+[node name="Body" type="StaticBody2D" parent="Actors/Workshop"]
+position = Vector2(0, -24)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Actors/Workshop/Body"]
+shape = SubResource("building")
+
+[node name="Clinic" type="Node2D" parent="Actors"]
+position = Vector2(0, -344)
+script = ExtResource("3")
+title = "社区诊所"
+building_height = 96
+kind = 3
+
+[node name="Body" type="StaticBody2D" parent="Actors/Clinic"]
+position = Vector2(0, -24)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Actors/Clinic/Body"]
+shape = SubResource("building")
+
+[node name="Courier" type="CharacterBody2D" parent="Actors"]
+position = Vector2(0, 160)
+script = ExtResource("4")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Actors/Courier"]
+position = Vector2(0, -3)
+shape = SubResource("courier")
+
+[node name="Points" type="Node2D" parent="."]
+z_index = 2
+
+[node name="Noodle" type="Node2D" parent="Points"]
+position = Vector2(-280, 88)
+script = ExtResource("5")
+point_id = &"noodle"
+display_name = "回声面馆"
+is_pickup = true
+
+[node name="Bento" type="Node2D" parent="Points"]
+position = Vector2(256, 184)
+script = ExtResource("5")
+point_id = &"bento"
+display_name = "夜班便当"
+is_pickup = true
+
+[node name="Residence" type="Node2D" parent="Points"]
+position = Vector2(-288, -224)
+script = ExtResource("5")
+point_id = &"residence"
+display_name = "住区 A 栋"
+
+[node name="Workshop" type="Node2D" parent="Points"]
+position = Vector2(272, -224)
+script = ExtResource("5")
+point_id = &"workshop"
+display_name = "维修站"
+
+[node name="Clinic" type="Node2D" parent="Points"]
+position = Vector2(0, -320)
+script = ExtResource("5")
+point_id = &"clinic"
+display_name = "社区诊所"
+
+[node name="Boundaries" type="StaticBody2D" parent="."]
+
+[node name="North" type="CollisionShape2D" parent="Boundaries"]
+position = Vector2(0, -444)
+shape = SubResource("horizontal_boundary")
+
+[node name="South" type="CollisionShape2D" parent="Boundaries"]
+position = Vector2(0, 444)
+shape = SubResource("horizontal_boundary")
+
+[node name="West" type="CollisionShape2D" parent="Boundaries"]
+position = Vector2(-572, 0)
+shape = SubResource("vertical_boundary")
+
+[node name="East" type="CollisionShape2D" parent="Boundaries"]
+position = Vector2(572, 0)
+shape = SubResource("vertical_boundary")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(0, 160)
+limit_left = -576
+limit_top = -448
+limit_right = 576
+limit_bottom = 448
+position_smoothing_enabled = false
+
+[node name="DeliveryService" type="Node" parent="."]
+script = ExtResource("6")
